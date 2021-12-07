@@ -21,20 +21,20 @@ class ImsCookie implements ICookie
 
     public function setCookie($name, $value, $exp = 3600, $options = [])
     {
-        $cookie_options = [
+        $cookieOptions = [
             'expires' => time() + $exp,
         ];
 
         // SameSite none and secure will be required for tools to work inside iframes
-        $same_site_options = [
+        $sameSiteOptions = [
             'samesite' => 'None',
             'secure' => true,
         ];
 
-        setcookie($name, $value, array_merge($cookie_options, $same_site_options, $options));
+        setcookie($name, $value, array_merge($cookieOptions, $sameSiteOptions, $options));
 
         // Set a second fallback cookie in the event that "SameSite" is not supported
-        setcookie('LEGACY_'.$name, $value, array_merge($cookie_options, $options));
+        setcookie('LEGACY_'.$name, $value, array_merge($cookieOptions, $options));
 
         return $this;
     }

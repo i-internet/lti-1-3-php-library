@@ -4,14 +4,14 @@ namespace Packback\Lti1p3;
 
 class LtiGradeSubmissionReview
 {
-    private $reviewable_status;
+    private $reviewableStatus;
     private $label;
     private $url;
     private $custom;
 
     public function __construct(array $gradeSubmission = null)
     {
-        $this->reviewable_status = $gradeSubmission['reviewableStatus'] ?? null;
+        $this->reviewableStatus = $gradeSubmission['reviewableStatus'] ?? null;
         $this->label = $gradeSubmission['label'] ?? null;
         $this->url = $gradeSubmission['url'] ?? null;
         $this->custom = $gradeSubmission['custom'] ?? null;
@@ -21,7 +21,7 @@ class LtiGradeSubmissionReview
     {
         // Additionally, includes the call back to filter out only NULL values
         return json_encode(array_filter([
-            'reviewableStatus' => $this->reviewable_status,
+            'reviewableStatus' => $this->reviewableStatus,
             'label' => $this->label,
             'url' => $this->url,
             'custom' => $this->custom,
@@ -38,12 +38,12 @@ class LtiGradeSubmissionReview
 
     public function getReviewableStatus()
     {
-        return $this->reviewable_status;
+        return $this->reviewableStatus;
     }
 
     public function setReviewableStatus($value)
     {
-        $this->reviewable_status = $value;
+        $this->reviewableStatus = $value;
 
         return $this;
     }

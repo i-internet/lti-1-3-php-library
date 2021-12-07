@@ -7,13 +7,13 @@ use Packback\Lti1p3\Interfaces\ICookie;
 class Redirect
 {
     private $location;
-    private $referer_query;
-    private static $CAN_302_COOKIE = 'LTI_302_Redirect';
+    private $refererQuery;
+    private const CAN_302_COOKIE = 'LTI_302_Redirect';
 
-    public function __construct(string $location, string $referer_query = null)
+    public function __construct(string $location, string $refererQuery = null)
     {
         $this->location = $location;
-        $this->referer_query = $referer_query;
+        $this->refererQuery = $refererQuery;
     }
 
     public function doRedirect()
@@ -24,10 +24,10 @@ class Redirect
 
     public function doHybridRedirect(ICookie $cookie)
     {
-        if (!empty($cookie->getCookie(self::$CAN_302_COOKIE))) {
+        if (!empty($cookie->getCookie(static::CAN_302_COOKIE))) {
             return $this->doRedirect();
         }
-        $cookie->setCookie(self::$CAN_302_COOKIE, 'true');
+        $cookie->setCookie(static::CAN_302_COOKIE, 'true');
         $this->doJsRedirect();
     }
 
@@ -43,10 +43,10 @@ class Redirect
         <script>
 
         document.getElementById('try-again').href=<?php
-        if (empty($this->referer_query)) {
+        if (empty($this->refererQuery)) {
             echo 'window.location.href';
         } else {
-            echo "window.location.origin + window.location.pathname + '?".$this->referer_query."'";
+            echo "window.location.origin + window.location.pathname + '?".$this->refererQuery."'";
         } ?>;
 
         var canAccessCookies = function() {
@@ -56,7 +56,7 @@ class Redirect
             }
             // Firefox returns true even if we don't actually have access
             try {
-                if (!document.cookie || document.cookie == "" || document.cookie.indexOf('<?php echo self::$CAN_302_COOKIE; ?>') === -1) {
+                if (!document.cookie || document.cookie == "" || document.cookie.indexOf('<?php echo static::CAN_302_COOKIE; ?>') === -1) {
                     return false;
                 }
             } catch (e) {

@@ -616,9 +616,9 @@ class LtiMessageLaunchTest extends TestCase
             $segments = [];
             $segments[] = JWT::urlsafeB64Encode(JWT::jsonEncode($header));
             $segments[] = JWT::urlsafeB64Encode(JWT::jsonEncode($data));
-            $signing_input = \implode('.', $segments);
+            $signingInput = \implode('.', $segments);
 
-            $signature = JWT::sign($signing_input, $this->issuer['tool_private_key'], $this->issuer['alg']);
+            $signature = JWT::sign($signingInput, $this->issuer['tool_private_key'], $this->issuer['alg']);
             $segments[] = JWT::urlsafeB64Encode($signature);
 
             return \implode('.', $segments);

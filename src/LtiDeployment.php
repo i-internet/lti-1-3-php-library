@@ -4,7 +4,7 @@ namespace Packback\Lti1p3;
 
 class LtiDeployment
 {
-    private $deployment_id;
+    private $deploymentId;
 
     public static function new()
     {
@@ -13,12 +13,12 @@ class LtiDeployment
 
     public function getDeploymentId()
     {
-        return $this->deployment_id;
+        return $this->deploymentId;
     }
 
-    public function setDeploymentId($deployment_id)
+    public function setDeploymentId($deploymentId)
     {
-        $this->deployment_id = $deployment_id;
+        $this->deploymentId = $deploymentId;
 
         return $this;
     }

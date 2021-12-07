@@ -46,7 +46,7 @@ class LtiMessageLaunch
     private $request;
     private $jwt;
     private $registration;
-    private $launch_id;
+    private $launchId;
 
     /**
      * Constructor.
@@ -64,7 +64,7 @@ class LtiMessageLaunch
     ) {
         $this->db = $database;
 
-        $this->launch_id = uniqid('lti1p3_launch_', true);
+        $this->launchId = uniqid('lti1p3_launch_', true);
 
         $this->cache = $cache;
         $this->cookie = $cookie;
@@ -86,7 +86,7 @@ class LtiMessageLaunch
     /**
      * Load an LtiMessageLaunch from a Cache using a launch id.
      *
-     * @param string    $launch_id the launch id of the LtiMessageLaunch object that is being pulled from the cache
+     * @param string    $launchId the launch id of the LtiMessageLaunch object that is being pulled from the cache
      * @param IDatabase $database  instance of the database interface used for looking up registrations and deployments
      * @param ICache    $cache     Instance of the Cache interface used to loading and storing launches. If non is provided launch data will be store in $_SESSION.
      *
@@ -94,14 +94,14 @@ class LtiMessageLaunch
      *
      * @return LtiMessageLaunch a populated and validated LtiMessageLaunch
      */
-    public static function fromCache($launch_id,
+    public static function fromCache($launchId,
         IDatabase $database,
         ICache $cache = null,
         ILtiServiceConnector $serviceConnector = null)
     {
         $new = new LtiMessageLaunch($database, $cache, null, $serviceConnector);
-        $new->launch_id = $launch_id;
-        $new->jwt = ['body' => $new->cache->getLaunchData($launch_id)];
+        $new->launchId = $launchId;
+        $new->jwt = ['body' => $new->cache->getLaunchData($launchId)];
 
         return $new->validateRegistration();
     }
@@ -261,7 +261,7 @@ class LtiMessageLaunch
      */
     public function getLaunchId()
     {
-        return $this->launch_id;
+        return $this->launchId;
     }
 
     private function getPublicKey()
@@ -303,7 +303,7 @@ class LtiMessageLaunch
 
     private function cacheLaunchData()
     {
-        $this->cache->cacheLaunchData($this->launch_id, $this->jwt['body']);
+        $this->cache->cacheLaunchData($this->launchId, $this->jwt['body']);
 
         return $this;
     }
@@ -328,17 +328,17 @@ class LtiMessageLaunch
         }
 
         // Get parts of JWT.
-        $jwt_parts = explode('.', $jwt);
+        $jwtParts = explode('.', $jwt);
 
-        if (count($jwt_parts) !== 3) {
+        if (count($jwtParts) !== 3) {
             // Invalid number of parts in JWT.
             throw new LtiException(static::ERR_INVALID_ID_TOKEN);
         }
 
         // Decode JWT headers.
-        $this->jwt['header'] = json_decode(JWT::urlsafeB64Decode($jwt_parts[0]), true);
+        $this->jwt['header'] = json_decode(JWT::urlsafeB64Decode($jwtParts[0]), true);
         // Decode JWT Body.
-        $this->jwt['body'] = json_decode(JWT::urlsafeB64Decode($jwt_parts[1]), true);
+        $this->jwt['body'] = json_decode(JWT::urlsafeB64Decode($jwtParts[1]), true);
 
         return $this;
     }
@@ -358,15 +358,15 @@ class LtiMessageLaunch
     private function validateRegistration()
     {
         // Find registration.
-        $client_id = is_array($this->jwt['body']['aud']) ? $this->jwt['body']['aud'][0] : $this->jwt['body']['aud'];
-        $this->registration = $this->db->findRegistrationByIssuer($this->jwt['body']['iss'], $client_id);
+        $clientId = is_array($this->jwt['body']['aud']) ? $this->jwt['body']['aud'][0] : $this->jwt['body']['aud'];
+        $this->registration = $this->db->findRegistrationByIssuer($this->jwt['body']['iss'], $clientId);
 
         if (empty($this->registration)) {
             throw new LtiException(static::ERR_MISSING_REGISTRATION);
         }
 
         // Check client id.
-        if ($client_id !== $this->registration->getClientId()) {
+        if ($clientId !== $this->registration->getClientId()) {
             // Client not registered.
             throw new LtiException(static::ERR_CLIENT_NOT_REGISTERED);
         }
@@ -381,11 +381,11 @@ class LtiMessageLaunch
         }
 
         // Fetch public key.
-        $public_key = $this->getPublicKey();
+        $publicKey = $this->getPublicKey();
 
         // Validate JWT signature
         try {
-            JWT::decode($this->request['id_token'], $public_key['key'], ['RS256']);
+            JWT::decode($this->request['id_token'], $publicKey['key'], ['RS256']);
         } catch (ExpiredException $e) {
             // Error validating signature.
             throw new LtiException(static::ERR_INVALID_SIGNATURE);
@@ -401,8 +401,8 @@ class LtiMessageLaunch
         }
 
         // Find deployment.
-        $client_id = is_array($this->jwt['body']['aud']) ? $this->jwt['body']['aud'][0] : $this->jwt['body']['aud'];
-        $deployment = $this->db->findDeployment($this->jwt['body']['iss'], $this->jwt['body'][LtiConstants::DEPLOYMENT_ID], $client_id);
+        $clientId = is_array($this->jwt['body']['aud']) ? $this->jwt['body']['aud'][0] : $this->jwt['body']['aud'];
+        $deployment = $this->db->findDeployment($this->jwt['body']['iss'], $this->jwt['body'][LtiConstants::DEPLOYMENT_ID], $clientId);
 
         if (empty($deployment)) {
             // deployment not recognized.
@@ -430,22 +430,22 @@ class LtiMessageLaunch
             new SubmissionReviewMessageValidator(),
         ];
 
-        $message_validator = false;
+        $messageValidator = false;
         foreach ($validators as $validator) {
             if ($validator->canValidate($this->jwt['body'])) {
-                if ($message_validator !== false) {
+                if ($messageValidator !== false) {
                     // Can't have more than one validator apply at a time.
                     throw new LtiException(static::ERR_VALIDATOR_CONFLICT);
                 }
-                $message_validator = $validator;
+                $messageValidator = $validator;
             }
         }
 
-        if ($message_validator === false) {
+        if ($messageValidator === false) {
             throw new LtiException(static::ERR_UNRECOGNIZED_MESSAGE_TYPE);
         }
 
-        if (!$message_validator->validate($this->jwt['body'])) {
+        if (!$messageValidator->validate($this->jwt['body'])) {
             throw new LtiException(static::ERR_INVALID_MESSAGE);
         }
 

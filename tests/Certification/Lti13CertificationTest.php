@@ -29,9 +29,9 @@ class TestCache implements ICache
         return $this->launchData[$key] ?? null;
     }
 
-    public function cacheLaunchData($key, $jwt_body)
+    public function cacheLaunchData($key, $jwtBody)
     {
-        $this->launchData[$key] = $jwt_body;
+        $this->launchData[$key] = $jwtBody;
 
         return $this;
     }
@@ -94,12 +94,12 @@ class TestDb implements IDatabase
         $this->deployments[$deployment->getDeploymentId()] = $deployment;
     }
 
-    public function findRegistrationByIssuer($iss, $client_id = null)
+    public function findRegistrationByIssuer($iss, $clientId = null)
     {
         return $this->registrations[$iss];
     }
 
-    public function findDeployment($iss, $deployment_id, $client_id = null)
+    public function findDeployment($iss, $deploymentId, $clientId = null)
     {
         return $this->deployments[$iss];
     }
@@ -235,9 +235,9 @@ class Lti13CertificationTest extends TestCase
             $segments = [];
             $segments[] = JWT::urlsafeB64Encode(JWT::jsonEncode($header));
             $segments[] = JWT::urlsafeB64Encode(JWT::jsonEncode($data));
-            $signing_input = \implode('.', $segments);
+            $signingInput = \implode('.', $segments);
 
-            $signature = JWT::sign($signing_input, $this->issuer['tool_private_key'], $this->issuer['alg']);
+            $signature = JWT::sign($signingInput, $this->issuer['tool_private_key'], $this->issuer['alg']);
             $segments[] = JWT::urlsafeB64Encode($signature);
 
             return \implode('.', $segments);
@@ -270,9 +270,9 @@ class Lti13CertificationTest extends TestCase
     public function testJwtPassedIsNotLti13Jwt()
     {
         $jwt = $this->buildJWT([], $this->issuer);
-        $jwt_r = explode('.', $jwt);
-        array_pop($jwt_r);
-        $jwt = implode('.', $jwt_r);
+        $jwtR = explode('.', $jwt);
+        array_pop($jwtR);
+        $jwt = implode('.', $jwtR);
 
         $params = [
             'utf8' => '✓',

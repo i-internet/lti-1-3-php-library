@@ -4,25 +4,25 @@ namespace Packback\Lti1p3;
 
 class LtiGrade
 {
-    private $score_given;
-    private $score_maximum;
+    private $scoreGiven;
+    private $scoreMaximum;
     private $comment;
-    private $activity_progress;
-    private $grading_progress;
+    private $activityProgress;
+    private $gradingProgress;
     private $timestamp;
-    private $user_id;
-    private $submission_review;
+    private $userId;
+    private $submissionReview;
 
     public function __construct(array $grade = null)
     {
-        $this->score_given = $grade['scoreGiven'] ?? null;
-        $this->score_maximum = $grade['scoreMaximum'] ?? null;
+        $this->scoreGiven = $grade['scoreGiven'] ?? null;
+        $this->scoreMaximum = $grade['scoreMaximum'] ?? null;
         $this->comment = $grade['comment'] ?? null;
-        $this->activity_progress = $grade['activityProgress'] ?? null;
-        $this->grading_progress = $grade['gradingProgress'] ?? null;
+        $this->activityProgress = $grade['activityProgress'] ?? null;
+        $this->gradingProgress = $grade['gradingProgress'] ?? null;
         $this->timestamp = $grade['timestamp'] ?? null;
-        $this->user_id = $grade['userId'] ?? null;
-        $this->submission_review = $grade['submissionReview'] ?? null;
+        $this->userId = $grade['userId'] ?? null;
+        $this->submissionReview = $grade['submissionReview'] ?? null;
         $this->canvas_extension = $grade['https://canvas.instructure.com/lti/submission'] ?? null;
     }
 
@@ -30,14 +30,14 @@ class LtiGrade
     {
         // Additionally, includes the call back to filter out only NULL values
         $request = array_filter([
-            'scoreGiven' => $this->score_given,
-            'scoreMaximum' => $this->score_maximum,
+            'scoreGiven' => $this->scoreGiven,
+            'scoreMaximum' => $this->scoreMaximum,
             'comment' => $this->comment,
-            'activityProgress' => $this->activity_progress,
-            'gradingProgress' => $this->grading_progress,
+            'activityProgress' => $this->activityProgress,
+            'gradingProgress' => $this->gradingProgress,
             'timestamp' => $this->timestamp,
-            'userId' => $this->user_id,
-            'submissionReview' => $this->submission_review,
+            'userId' => $this->userId,
+            'submissionReview' => $this->submissionReview,
             'https://canvas.instructure.com/lti/submission' => $this->canvas_extension,
         ], '\Packback\Lti1p3\Helpers\Helpers::checkIfNullValue');
 
@@ -54,24 +54,24 @@ class LtiGrade
 
     public function getScoreGiven()
     {
-        return $this->score_given;
+        return $this->scoreGiven;
     }
 
     public function setScoreGiven($value)
     {
-        $this->score_given = $value;
+        $this->scoreGiven = $value;
 
         return $this;
     }
 
     public function getScoreMaximum()
     {
-        return $this->score_maximum;
+        return $this->scoreMaximum;
     }
 
     public function setScoreMaximum($value)
     {
-        $this->score_maximum = $value;
+        $this->scoreMaximum = $value;
 
         return $this;
     }
@@ -90,24 +90,24 @@ class LtiGrade
 
     public function getActivityProgress()
     {
-        return $this->activity_progress;
+        return $this->activityProgress;
     }
 
     public function setActivityProgress($value)
     {
-        $this->activity_progress = $value;
+        $this->activityProgress = $value;
 
         return $this;
     }
 
     public function getGradingProgress()
     {
-        return $this->grading_progress;
+        return $this->gradingProgress;
     }
 
     public function setGradingProgress($value)
     {
-        $this->grading_progress = $value;
+        $this->gradingProgress = $value;
 
         return $this;
     }
@@ -126,24 +126,24 @@ class LtiGrade
 
     public function getUserId()
     {
-        return $this->user_id;
+        return $this->userId;
     }
 
     public function setUserId($value)
     {
-        $this->user_id = $value;
+        $this->userId = $value;
 
         return $this;
     }
 
     public function getSubmissionReview()
     {
-        return $this->submission_review;
+        return $this->submissionReview;
     }
 
     public function setSubmissionReview($value)
     {
-        $this->submission_review = $value;
+        $this->submissionReview = $value;
 
         return $this;
     }

@@ -9,7 +9,7 @@ class LtiDeepLinkResource
     private $text;
     private $url;
     private $lineitem;
-    private $custom_params = [];
+    private $customParams = [];
     private $target = 'iframe';
 
     public static function new()
@@ -79,12 +79,12 @@ class LtiDeepLinkResource
 
     public function getCustomParams()
     {
-        return $this->custom_params;
+        return $this->customParams;
     }
 
     public function setCustomParams($value)
     {
-        $this->custom_params = $value;
+        $this->customParams = $value;
 
         return $this;
     }
@@ -111,7 +111,7 @@ class LtiDeepLinkResource
             'presentation' => [
                 'documentTarget' => $this->target,
             ],
-            'custom' => $this->custom_params,
+            'custom' => $this->customParams,
         ];
         if ($this->lineitem !== null) {
             $resource['lineItem'] = [

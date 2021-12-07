@@ -160,8 +160,8 @@ class LtiServiceConnector implements ILtiServiceConnector
         while ($nextUrl) {
             $response = $this->makeServiceRequest($registration, $scopes, $request);
 
-            $page_results = $key === null ? ($response['body'] ?? []) : ($response['body'][$key] ?? []);
-            $results = array_merge($results, $page_results);
+            $pageResults = $key === null ? ($response['body'] ?? []) : ($response['body'][$key] ?? []);
+            $results = array_merge($results, $pageResults);
 
             $nextUrl = $this->getNextUrl($response['headers']);
             if ($nextUrl) {

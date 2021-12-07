@@ -36,10 +36,10 @@ class JwksEndpoint
     public function getPublicJwks()
     {
         $jwks = [];
-        foreach ($this->keys as $kid => $private_key) {
+        foreach ($this->keys as $kid => $privateKey) {
             $key = new RSA();
             $key->setHash('sha256');
-            $key->loadKey($private_key);
+            $key->loadKey($privateKey);
             $key->setPublicKey(false, RSA::PUBLIC_FORMAT_PKCS8);
             if (!$key->publicExponent) {
                 continue;
