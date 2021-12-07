@@ -6,9 +6,9 @@ use Packback\Lti1p3\Interfaces\ICookie;
 
 class Redirect
 {
+    private const CAN_302_COOKIE = 'LTI_302_Redirect';
     private $location;
     private $refererQuery;
-    private const CAN_302_COOKIE = 'LTI_302_Redirect';
 
     public function __construct(string $location, string $refererQuery = null)
     {

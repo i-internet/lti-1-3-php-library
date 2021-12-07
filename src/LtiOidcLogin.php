@@ -45,7 +45,7 @@ class LtiOidcLogin
      * Calculate the redirect location to return to based on an OIDC third party initiated login request.
      *
      * @param string       $launchUrl URL to redirect back to after the OIDC login. This URL must match exactly a URL white listed in the platform.
-     * @param array|string $request    An array of request parameters. If not set will default to $_REQUEST.
+     * @param array|string $request   An array of request parameters. If not set will default to $_REQUEST.
      *
      * @return Redirect returns a redirect object containing the fully formed OIDC login URL
      */
