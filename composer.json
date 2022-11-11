@@ -44,6 +44,6 @@
     "scripts": {
         "test": "phpunit",
         "lint": "pint --test",
-        "lint-fix": "pint -V"
+        "lint-fix": "pint -v"
     }
 }
