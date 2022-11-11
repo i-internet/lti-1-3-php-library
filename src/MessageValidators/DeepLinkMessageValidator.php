@@ -10,7 +10,7 @@ class DeepLinkMessageValidator implements IMessageValidator
 {
     public static function canValidate(array $jwtBody): bool
     {
-        return $jwtBody[LtiConstants::MESSAGE_TYPE] === 'LtiDeepLinkingRequest';
+        return $jwtBody[LtiConstants::MESSAGE_TYPE] === LtiConstants::MESSAGE_TYPE_DEEPLINK;
     }
 
     public static function validate(array $jwtBody): bool

@@ -10,7 +10,7 @@ class SubmissionReviewMessageValidator implements IMessageValidator
 {
     public static function canValidate(array $jwtBody): bool
     {
-        return $jwtBody[LtiConstants::MESSAGE_TYPE] === 'LtiSubmissionReviewRequest';
+        return $jwtBody[LtiConstants::MESSAGE_TYPE] === LtiConstants::MESSAGE_TYPE_SUBMISSIONREVIEW;
     }
 
     public static function validate(array $jwtBody): bool

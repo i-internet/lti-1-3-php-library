@@ -10,7 +10,7 @@ class ResourceMessageValidator implements IMessageValidator
 {
     public static function canValidate(array $jwtBody): bool
     {
-        return $jwtBody[LtiConstants::MESSAGE_TYPE] === 'LtiResourceLinkRequest';
+        return $jwtBody[LtiConstants::MESSAGE_TYPE] === LtiConstants::MESSAGE_TYPE_RESOURCE;
     }
 
     public static function validate(array $jwtBody): bool
