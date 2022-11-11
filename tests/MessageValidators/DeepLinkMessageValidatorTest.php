@@ -40,4 +40,14 @@ class DeepLinkMessageValidatorTest extends TestCase
     {
         $this->assertTrue(DeepLinkMessageValidator::validate(static::validJwtBody()));
     }
+
+    public function testJwtBodyIsInvalidMissingSub()
+    {
+        $jwtBody = static::validJwtBody();
+        unset($jwtBody['sub']);
+
+        $this->expectException(LtiException::class);
+
+        DeepLinkMessageValidator::validate($jwtBody);
+    }
 }
