@@ -8,12 +8,12 @@ use Packback\Lti1p3\LtiException;
 
 class ResourceMessageValidator implements IMessageValidator
 {
-    public function canValidate(array $jwtBody)
+    public static function canValidate(array $jwtBody): bool
     {
         return $jwtBody[LtiConstants::MESSAGE_TYPE] === 'LtiResourceLinkRequest';
     }
 
-    public function validate(array $jwtBody)
+    public static function validate(array $jwtBody): bool
     {
         if (empty($jwtBody['sub'])) {
             throw new LtiException('Must have a user (sub)');

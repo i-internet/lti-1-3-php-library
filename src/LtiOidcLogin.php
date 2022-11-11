@@ -22,8 +22,8 @@ class LtiOidcLogin
      * Constructor.
      *
      * @param IDatabase $database Instance of the Database interface used for looking up registrations and deployments
-     * @param ICache    $cache    Instance of the Cache interface used to loading and storing launches.
-     * @param ICookie   $cookie   Instance of the Cookie interface used to set and read cookies.
+     * @param ICache    $cache Instance of the Cache interface used to loading and storing launches.
+     * @param ICookie   $cookie Instance of the Cookie interface used to set and read cookies.
      */
     public function __construct(IDatabase $database, ICache $cache = null, ICookie $cookie = null)
     {
@@ -44,7 +44,7 @@ class LtiOidcLogin
      * Calculate the redirect location to return to based on an OIDC third party initiated login request.
      *
      * @param string    $launch_url URL to redirect back to after the OIDC login. This URL must match exactly a URL white listed in the platform.
-     * @param array     $requestParams    An array of request parameters.
+     * @param array     $requestParams An array of request parameters.
      *
      * @return Redirect returns a redirect object containing the fully formed OIDC login URL
      */

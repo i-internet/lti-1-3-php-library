@@ -4,7 +4,7 @@ namespace Packback\Lti1p3\Interfaces;
 
 interface IMessageValidator
 {
-    public function validate(array $jwtBody);
+    public static function validate(array $jwtBody): bool;
 
-    public function canValidate(array $jwtBody);
+    public static function canValidate(array $jwtBody): bool;
 }

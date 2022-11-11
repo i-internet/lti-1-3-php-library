@@ -11,6 +11,7 @@ use Packback\Lti1p3\Interfaces\ICache;
 use Packback\Lti1p3\Interfaces\ICookie;
 use Packback\Lti1p3\Interfaces\IDatabase;
 use Packback\Lti1p3\Interfaces\ILtiServiceConnector;
+use Packback\Lti1p3\Interfaces\IMessageValidator;
 use Packback\Lti1p3\MessageValidators\DeepLinkMessageValidator;
 use Packback\Lti1p3\MessageValidators\ResourceMessageValidator;
 use Packback\Lti1p3\MessageValidators\SubmissionReviewMessageValidator;
@@ -42,7 +43,6 @@ class LtiMessageLaunch
     public const ERR_MISSING_DEPLOYEMENT_ID = 'No deployment ID was specified';
     public const ERR_NO_DEPLOYMENT = 'Unable to find deployment.';
     public const ERR_INVALID_MESSAGE_TYPE = 'Invalid message type';
-    public const ERR_VALIDATOR_CONFLICT = 'Validator conflict.';
     public const ERR_UNRECOGNIZED_MESSAGE_TYPE = 'Unrecognized message type.';
     public const ERR_INVALID_MESSAGE = 'Message validation failed.';
     public const ERR_INVALID_ALG = 'Invalid alg was specified in the JWT header.';
@@ -70,10 +70,10 @@ class LtiMessageLaunch
     /**
      * Constructor.
      *
-     * @param IDatabase            $database         instance of the database interface used for looking up registrations and deployments
-     * @param ICache               $cache            instance of the Cache interface used to loading and storing launches
-     * @param ICookie              $cookie           instance of the Cookie interface used to set and read cookies
-     * @param ILtiServiceConnector $serviceConnector instance of the LtiServiceConnector used to by LTI services to make API requests
+     * @param IDatabase $database Instance of the database interface used for looking up registrations and deployments
+     * @param ICache $cache Instance of the Cache interface used to loading and storing launches
+     * @param ICookie $cookie Instance of the Cookie interface used to set and read cookies
+     * @param ILtiServiceConnector $serviceConnector Instance of the LtiServiceConnector used to by LTI services to make API requests
      */
     public function __construct(
         IDatabase $database,
@@ -105,13 +105,13 @@ class LtiMessageLaunch
     /**
      * Load an LtiMessageLaunch from a Cache using a launch id.
      *
-     * @param string    $launchId  The launch id of the LtiMessageLaunch object that is being pulled from the cache.
-     * @param IDatabase $database  Instance of the Database interface used for looking up registrations and deployments.
-     * @param ICache    $cache     Instance of the Cache interface used to loading and storing launches.
+     * @param string $launchId The launch id of the LtiMessageLaunch object that is being pulled from the cache.
+     * @param IDatabase $database Instance of the Database interface used for looking up registrations and deployments.
+     * @param ICache $cache Instance of the Cache interface used to loading and storing launches.
      *
-     * @throws LtiException will throw an LtiException if validation fails or launch cannot be found
+     * @throws LtiException Will throw an LtiException if validation fails or launch cannot be found
      *
-     * @return LtiMessageLaunch a populated and validated LtiMessageLaunch
+     * @return LtiMessageLaunch A populated and validated LtiMessageLaunch
      */
     public static function fromCache($launchId,
         IDatabase $database,
@@ -130,9 +130,9 @@ class LtiMessageLaunch
      *
      * @param array $requestParams An array of post request parameters.
      *
-     * @throws LtiException will throw an LtiException if validation fails
+     * @throws LtiException Will throw an LtiException if validation fails
      *
-     * @return LtiMessageLaunch will return $this if validation is successful
+     * @return LtiMessageLaunch Will return $this if validation is successful
      */
     public function validate(array $requestParams)
     {
@@ -207,7 +207,7 @@ class LtiMessageLaunch
     /**
      * Fetches an instance of the assignments and grades service for the current launch.
      *
-     * @return LtiAssignmentsGradesService an instance of the assignments an grades service that can be used to make calls within the scope of the current launch
+     * @return LtiAssignmentsGradesService An instance of the assignments an grades service that can be used to make calls within the scope of the current launch
      */
     public function getAgs()
     {
@@ -482,36 +482,33 @@ class LtiMessageLaunch
             throw new LtiException(static::ERR_INVALID_MESSAGE_TYPE);
         }
 
-        /**
-         * @todo Fix this nonsense
-         */
+        $validator = $this->getMessageValidator($this->jwt['body']);
 
-        // Create instances of all validators
-        $validators = [
-            new DeepLinkMessageValidator(),
-            new ResourceMessageValidator(),
-            new SubmissionReviewMessageValidator(),
-        ];
-
-        $message_validator = false;
-        foreach ($validators as $validator) {
-            if ($validator->canValidate($this->jwt['body'])) {
-                if ($message_validator !== false) {
-                    // Can't have more than one validator apply at a time.
-                    throw new LtiException(static::ERR_VALIDATOR_CONFLICT);
-                }
-                $message_validator = $validator;
-            }
-        }
-
-        if ($message_validator === false) {
+        if (!isset($validator)) {
             throw new LtiException(static::ERR_UNRECOGNIZED_MESSAGE_TYPE);
         }
 
-        if (!$message_validator->validate($this->jwt['body'])) {
+        if (!$validator::validate($this->jwt['body'])) {
             throw new LtiException(static::ERR_INVALID_MESSAGE);
         }
 
         return $this;
+    }
+
+    private function getMessageValidator(array $jwtBody): ?string
+    {
+        $availableValidators = [
+            DeepLinkMessageValidator::class,
+            ResourceMessageValidator::class,
+            SubmissionReviewMessageValidator::class,
+        ];
+
+        // Filter out validators that cannot validate the message
+        $applicableValidators = array_filter($availableValidators, function ($validator) use ($jwtBody) {
+            return $validator::canValidate($jwtBody);
+        });
+
+        // There should be 0-1 validators. This will either return the validator, or null if none apply.
+        return array_shift($applicableValidators);
     }
 }
