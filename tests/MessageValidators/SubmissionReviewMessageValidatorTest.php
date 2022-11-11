@@ -80,4 +80,24 @@ class SubmissionReviewMessageValidatorTest extends TestCase
 
         SubmissionReviewMessageValidator::validate($jwtBody);
     }
+
+    public function testJwtBodyIsInvalidMissingResourceLinkId()
+    {
+        $jwtBody = static::validJwtBody();
+        unset($jwtBody[LtiConstants::RESOURCE_LINK]['id']);
+
+        $this->expectException(LtiException::class);
+
+        SubmissionReviewMessageValidator::validate($jwtBody);
+    }
+
+    public function testJwtBodyIsInvalidMissingForUser()
+    {
+        $jwtBody = static::validJwtBody();
+        unset($jwtBody[LtiConstants::FOR_USER]);
+
+        $this->expectException(LtiException::class);
+
+        SubmissionReviewMessageValidator::validate($jwtBody);
+    }
 }

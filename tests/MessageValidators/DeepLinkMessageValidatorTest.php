@@ -81,4 +81,54 @@ class DeepLinkMessageValidatorTest extends TestCase
 
         DeepLinkMessageValidator::validate($jwtBody);
     }
+
+    public function testJwtBodyIsInvalidMissingDeepLinkSetting()
+    {
+        $jwtBody = static::validJwtBody();
+        unset($jwtBody[LtiConstants::DL_DEEP_LINK_SETTINGS]);
+
+        $this->expectException(LtiException::class);
+
+        DeepLinkMessageValidator::validate($jwtBody);
+    }
+
+    public function testJwtBodyIsInvalidMissingDeepLinkReturnUrl()
+    {
+        $jwtBody = static::validJwtBody();
+        unset($jwtBody[LtiConstants::DL_DEEP_LINK_SETTINGS]['deep_link_return_url']);
+
+        $this->expectException(LtiException::class);
+
+        DeepLinkMessageValidator::validate($jwtBody);
+    }
+
+    public function testJwtBodyIsInvalidMissingAcceptType()
+    {
+        $jwtBody = static::validJwtBody();
+        unset($jwtBody[LtiConstants::DL_DEEP_LINK_SETTINGS]['accept_types']);
+
+        $this->expectException(LtiException::class);
+
+        DeepLinkMessageValidator::validate($jwtBody);
+    }
+
+    public function testJwtBodyIsInvalidAcceptTypeIsInvalid()
+    {
+        $jwtBody = static::validJwtBody();
+        $jwtBody[LtiConstants::DL_DEEP_LINK_SETTINGS]['accept_types'] = [];
+
+        $this->expectException(LtiException::class);
+
+        DeepLinkMessageValidator::validate($jwtBody);
+    }
+
+    public function testJwtBodyIsInvalidMissingPresentation()
+    {
+        $jwtBody = static::validJwtBody();
+        unset($jwtBody[LtiConstants::DL_DEEP_LINK_SETTINGS]['accept_presentation_document_targets']);
+
+        $this->expectException(LtiException::class);
+
+        DeepLinkMessageValidator::validate($jwtBody);
+    }
 }

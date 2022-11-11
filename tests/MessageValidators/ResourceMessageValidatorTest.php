@@ -79,4 +79,14 @@ class ResourceMessageValidatorTest extends TestCase
 
         ResourceMessageValidator::validate($jwtBody);
     }
+
+    public function testJwtBodyIsInvalidMissingResourceLinkId()
+    {
+        $jwtBody = static::validJwtBody();
+        unset($jwtBody[LtiConstants::RESOURCE_LINK]['id']);
+
+        $this->expectException(LtiException::class);
+
+        ResourceMessageValidator::validate($jwtBody);
+    }
 }

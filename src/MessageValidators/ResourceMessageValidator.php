@@ -17,9 +17,6 @@ class ResourceMessageValidator extends AbstractMessageValidator
     {
         static::validateGenericMessage($jwtBody);
 
-        if (!isset($jwtBody[LtiConstants::ROLES])) {
-            throw new LtiException('Missing Roles Claim');
-        }
         if (empty($jwtBody[LtiConstants::RESOURCE_LINK]['id'])) {
             throw new LtiException('Missing Resource Link Id');
         }
