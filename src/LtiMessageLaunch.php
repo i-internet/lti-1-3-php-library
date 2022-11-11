@@ -105,22 +105,22 @@ class LtiMessageLaunch
     /**
      * Load an LtiMessageLaunch from a Cache using a launch id.
      *
-     * @param string    $launch_id the launch id of the LtiMessageLaunch object that is being pulled from the cache
-     * @param IDatabase $database  instance of the database interface used for looking up registrations and deployments
-     * @param ICache    $cache     Instance of the Cache interface used to loading and storing launches. If non is provided launch data will be store in $_SESSION.
+     * @param string    $launchId  The launch id of the LtiMessageLaunch object that is being pulled from the cache.
+     * @param IDatabase $database  Instance of the Database interface used for looking up registrations and deployments.
+     * @param ICache    $cache     Instance of the Cache interface used to loading and storing launches.
      *
      * @throws LtiException will throw an LtiException if validation fails or launch cannot be found
      *
      * @return LtiMessageLaunch a populated and validated LtiMessageLaunch
      */
-    public static function fromCache($launch_id,
+    public static function fromCache($launchId,
         IDatabase $database,
         ICache $cache = null,
         ILtiServiceConnector $serviceConnector = null)
     {
         $new = new LtiMessageLaunch($database, $cache, null, $serviceConnector);
-        $new->launch_id = $launch_id;
-        $new->jwt = ['body' => $new->cache->getLaunchData($launch_id)];
+        $new->launch_id = $launchId;
+        $new->jwt = ['body' => $new->cache->getLaunchData($launchId)];
 
         return $new->validateRegistration();
     }
@@ -128,18 +128,15 @@ class LtiMessageLaunch
     /**
      * Validates all aspects of an incoming LTI message launch and caches the launch if successful.
      *
-     * @param array|string $request An array of post request parameters. If not set will default to $_POST.
+     * @param array $requestParams An array of post request parameters.
      *
      * @throws LtiException will throw an LtiException if validation fails
      *
      * @return LtiMessageLaunch will return $this if validation is successful
      */
-    public function validate(array $request = null)
+    public function validate(array $requestParams)
     {
-        if ($request === null) {
-            $request = $_POST;
-        }
-        $this->request = $request;
+        $this->request = $requestParams;
 
         return $this->validateState()
             ->validateJwtFormat()

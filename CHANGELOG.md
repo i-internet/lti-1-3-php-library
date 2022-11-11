@@ -1,3 +1,7 @@
+## 6.0.0
+
+Make request params required for `LtiMessageLaunch::validate()` and `LtiOidcLogin::doOidcLoginRedirect()`.
+
 ## 5.1.7
 
 Add `AssignmentGradesService::updateLineitem()` to update a line item [#58](https://github.com/packbackbooks/lti-1-3-php-library/pull/58).

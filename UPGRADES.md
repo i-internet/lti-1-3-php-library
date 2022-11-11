@@ -1,3 +1,27 @@
+## 5.0 to 6.0
+
+### Optional request arguments are now required
+
+The `LtiMessageLaunch::validate()` and `LtiOidcLogin::doOidcLoginRedirect()` had an optional `array $request` argument that is now required. (Previously, they would default to the values of `$_POST` or `$_REQUEST` respectively.)
+
+```php
+// Change:
+$ltiMessageLaunch->validate();
+// To (in Laravel):
+$ltiMessageLaunch->validate($request->all());
+// Or:
+$ltiMessageLaunch->validate($_POST);
+```
+
+```php
+// Change:
+$ltiOidcLogin->doOidcLoginRedirect($launchUrl);
+// To (in Laravel):
+$ltiOidcLogin->doOidcLoginRedirect($launchUrl, $request->all());
+// Or:
+$ltiOidcLogin->doOidcLoginRedirect($launchUrl, $_REQUEST);
+```
+
 ## 4.0 to 5.0
 
 ### Changes to `ICache` methods
