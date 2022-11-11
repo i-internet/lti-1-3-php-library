@@ -6,24 +6,17 @@ use Packback\Lti1p3\Interfaces\IMessageValidator;
 use Packback\Lti1p3\LtiConstants;
 use Packback\Lti1p3\LtiException;
 
-class ResourceMessageValidator implements IMessageValidator
+class ResourceMessageValidator extends AbstractMessageValidator
 {
-    public static function canValidate(array $jwtBody): bool
+    public static function getMessageType(): string
     {
-        return $jwtBody[LtiConstants::MESSAGE_TYPE] === LtiConstants::MESSAGE_TYPE_RESOURCE;
+        return LtiConstants::MESSAGE_TYPE_RESOURCE;
     }
 
     public static function validate(array $jwtBody): bool
     {
-        if (empty($jwtBody['sub'])) {
-            throw new LtiException('Must have a user (sub)');
-        }
-        if (!isset($jwtBody[LtiConstants::VERSION])) {
-            throw new LtiException('Missing LTI Version');
-        }
-        if ($jwtBody[LtiConstants::VERSION] !== LtiConstants::V1_3) {
-            throw new LtiException('Incorrect version, expected 1.3.0');
-        }
+        static::validateGenericMessage($jwtBody);
+
         if (!isset($jwtBody[LtiConstants::ROLES])) {
             throw new LtiException('Missing Roles Claim');
         }

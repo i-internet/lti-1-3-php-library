@@ -8,28 +8,11 @@ use Tests\TestCase;
 
 class SubmissionReviewMessageValidatorTest extends TestCase
 {
-    public function testItCanValidate()
+    private static function validJwtBody()
     {
-        $jwtBody = [
-            LtiConstants::MESSAGE_TYPE => LtiConstants::MESSAGE_TYPE_SUBMISSIONREVIEW
-        ];
-        
-        $this->assertTrue(SubmissionReviewMessageValidator::canValidate($jwtBody));
-    }
-
-    public function testItCannotValidate()
-    {
-        $jwtBody = [
-            LtiConstants::MESSAGE_TYPE => 'not a submission review'
-        ];
-        
-        $this->assertFalse(SubmissionReviewMessageValidator::canValidate($jwtBody));
-    }
-
-    public function testJwtBodyIsValid()
-    {
-        $jwtBody = [
+        return [
             'sub' => 'subscriber',
+            LtiConstants::MESSAGE_TYPE => SubmissionReviewMessageValidator::getMessageType(),
             LtiConstants::VERSION => LtiConstants::V1_3,
             LtiConstants::ROLES => [],
             LtiConstants::RESOURCE_LINK => [
@@ -37,7 +20,23 @@ class SubmissionReviewMessageValidatorTest extends TestCase
             ],
             LtiConstants::FOR_USER => 'user',
         ];
-        
-        $this->assertTrue(SubmissionReviewMessageValidator::validate($jwtBody));
+    }
+
+    public function testItCanValidate()
+    {
+        $this->assertTrue(SubmissionReviewMessageValidator::canValidate(static::validJwtBody()));
+    }
+
+    public function testItCannotValidate()
+    {
+        $jwtBody = static::validJwtBody();
+        $jwtBody[LtiConstants::MESSAGE_TYPE] = 'some other type';
+
+        $this->assertFalse(SubmissionReviewMessageValidator::canValidate($jwtBody));
+    }
+
+    public function testJwtBodyIsValid()
+    {
+        $this->assertTrue(SubmissionReviewMessageValidator::validate(static::validJwtBody()));
     }
 }

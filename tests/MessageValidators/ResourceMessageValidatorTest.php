@@ -8,35 +8,34 @@ use Tests\TestCase;
 
 class ResourceMessageValidatorTest extends TestCase
 {
-    public function testItCanValidate()
+    private static function validJwtBody()
     {
-        $jwtBody = [
-            LtiConstants::MESSAGE_TYPE => LtiConstants::MESSAGE_TYPE_RESOURCE
-        ];
-        
-        $this->assertTrue(ResourceMessageValidator::canValidate($jwtBody));
-    }
-
-    public function testItCannotValidate()
-    {
-        $jwtBody = [
-            LtiConstants::MESSAGE_TYPE => 'not a resource'
-        ];
-        
-        $this->assertFalse(ResourceMessageValidator::canValidate($jwtBody));
-    }
-
-    public function testJwtBodyIsValid()
-    {
-        $jwtBody = [
+        return [
             'sub' => 'subscriber',
+            LtiConstants::MESSAGE_TYPE => ResourceMessageValidator::getMessageType(),
             LtiConstants::VERSION => LtiConstants::V1_3,
             LtiConstants::ROLES => [],
             LtiConstants::RESOURCE_LINK => [
                 'id' => 'unique-id',
             ],
         ];
-        
-        $this->assertTrue(ResourceMessageValidator::validate($jwtBody));
+    }
+
+    public function testItCanValidate()
+    {
+        $this->assertTrue(ResourceMessageValidator::canValidate(static::validJwtBody()));
+    }
+
+    public function testItCannotValidate()
+    {
+        $jwtBody = static::validJwtBody();
+        $jwtBody[LtiConstants::MESSAGE_TYPE] = 'some other type';
+
+        $this->assertFalse(ResourceMessageValidator::canValidate($jwtBody));
+    }
+
+    public function testJwtBodyIsValid()
+    {
+        $this->assertTrue(ResourceMessageValidator::validate(static::validJwtBody()));
     }
 }

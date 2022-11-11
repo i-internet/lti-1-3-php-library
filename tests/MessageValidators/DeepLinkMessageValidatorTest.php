@@ -8,28 +8,11 @@ use Tests\TestCase;
 
 class DeepLinkMessageValidatorTest extends TestCase
 {
-    public function testItCanValidate()
+    private static function validJwtBody()
     {
-        $jwtBody = [
-            LtiConstants::MESSAGE_TYPE => LtiConstants::MESSAGE_TYPE_DEEPLINK
-        ];
-        
-        $this->assertTrue(DeepLinkMessageValidator::canValidate($jwtBody));
-    }
-
-    public function testItCannotValidate()
-    {
-        $jwtBody = [
-            LtiConstants::MESSAGE_TYPE => 'not a deep link'
-        ];
-        
-        $this->assertFalse(DeepLinkMessageValidator::canValidate($jwtBody));
-    }
-
-    public function testJwtBodyIsValid()
-    {
-        $jwtBody = [
+        return [
             'sub' => 'subscriber',
+            LtiConstants::MESSAGE_TYPE => DeepLinkMessageValidator::getMessageType(),
             LtiConstants::VERSION => LtiConstants::V1_3,
             LtiConstants::ROLES => [],
             LtiConstants::DL_DEEP_LINK_SETTINGS => [
@@ -38,7 +21,23 @@ class DeepLinkMessageValidatorTest extends TestCase
                 'accept_presentation_document_targets' => [ 'iframe' ],
             ],
         ];
-        
-        $this->assertTrue(DeepLinkMessageValidator::validate($jwtBody));
+    }
+
+    public function testItCanValidate()
+    {
+        $this->assertTrue(DeepLinkMessageValidator::canValidate(static::validJwtBody()));
+    }
+
+    public function testItCannotValidate()
+    {
+        $jwtBody = static::validJwtBody();
+        $jwtBody[LtiConstants::MESSAGE_TYPE] = 'some other type';
+
+        $this->assertFalse(DeepLinkMessageValidator::canValidate($jwtBody));
+    }
+
+    public function testJwtBodyIsValid()
+    {
+        $this->assertTrue(DeepLinkMessageValidator::validate(static::validJwtBody()));
     }
 }

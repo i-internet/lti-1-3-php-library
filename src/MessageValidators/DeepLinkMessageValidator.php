@@ -6,24 +6,17 @@ use Packback\Lti1p3\Interfaces\IMessageValidator;
 use Packback\Lti1p3\LtiConstants;
 use Packback\Lti1p3\LtiException;
 
-class DeepLinkMessageValidator implements IMessageValidator
+class DeepLinkMessageValidator extends AbstractMessageValidator
 {
-    public static function canValidate(array $jwtBody): bool
+    public static function getMessageType(): string
     {
-        return $jwtBody[LtiConstants::MESSAGE_TYPE] === LtiConstants::MESSAGE_TYPE_DEEPLINK;
+        return LtiConstants::MESSAGE_TYPE_DEEPLINK;
     }
 
     public static function validate(array $jwtBody): bool
     {
-        if (empty($jwtBody['sub'])) {
-            throw new LtiException('Must have a user (sub)');
-        }
-        if ($jwtBody[LtiConstants::VERSION] !== LtiConstants::V1_3) {
-            throw new LtiException('Incorrect version, expected 1.3.0');
-        }
-        if (!isset($jwtBody[LtiConstants::ROLES])) {
-            throw new LtiException('Missing Roles Claim');
-        }
+        static::validateGenericMessage($jwtBody);
+
         if (empty($jwtBody[LtiConstants::DL_DEEP_LINK_SETTINGS])) {
             throw new LtiException('Missing Deep Linking Settings');
         }
