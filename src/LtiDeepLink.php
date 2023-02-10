@@ -7,9 +7,9 @@ use Packback\Lti1p3\Interfaces\ILtiRegistration;
 
 class LtiDeepLink
 {
-    private $registration;
-    private $deployment_id;
-    private $deep_link_settings;
+    public $registration;
+    public $deployment_id;
+    public $deep_link_settings;
 
     public function __construct(ILtiRegistration $registration, string $deployment_id, array $deep_link_settings)
     {
@@ -18,7 +18,7 @@ class LtiDeepLink
         $this->deep_link_settings = $deep_link_settings;
     }
 
-    public function getResponseJwt($resources)
+    public function getResponseJwt(array $resources): string
     {
         $message_jwt = [
             'iss' => $this->registration->getClientId(),
@@ -43,7 +43,7 @@ class LtiDeepLink
         return JWT::encode($message_jwt, $this->registration->getToolPrivateKey(), 'RS256', $this->registration->getKid());
     }
 
-    public function outputResponseForm($resources)
+    public function outputResponseForm(array $resources)
     {
         $jwt = $this->getResponseJwt($resources);
         /*
