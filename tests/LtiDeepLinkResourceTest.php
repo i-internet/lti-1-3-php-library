@@ -3,28 +3,28 @@
 namespace Tests;
 
 use Mockery;
-use Packback\Lti1p3\LtiDeepLinkResource;
-use Packback\Lti1p3\LtiDeepLinkResourceIcon;
+use Packback\Lti1p3\DeepLinks\ResourceLink;
+use Packback\Lti1p3\DeepLinks\Icon;
 use Packback\Lti1p3\LtiLineitem;
 
-class LtiDeepLinkResourceTest extends TestCase
+class ResourceLinkTest extends TestCase
 {
     public function setUp(): void
     {
         $this->imageUrl = 'https://example.com/image.png';
-        $this->deepLinkResource = new LtiDeepLinkResource();
+        $this->deepLinkResource = new ResourceLink();
     }
 
     public function testItInstantiates()
     {
-        $this->assertInstanceOf(LtiDeepLinkResource::class, $this->deepLinkResource);
+        $this->assertInstanceOf(ResourceLink::class, $this->deepLinkResource);
     }
 
     public function testItCreatesANewInstance()
     {
-        $deepLinkResource = LtiDeepLinkResource::new();
+        $deepLinkResource = ResourceLink::new();
 
-        $this->assertInstanceOf(LtiDeepLinkResource::class, $deepLinkResource);
+        $this->assertInstanceOf(ResourceLink::class, $deepLinkResource);
     }
 
     public function testItGetsType()
@@ -116,7 +116,7 @@ class LtiDeepLinkResourceTest extends TestCase
 
     public function testItSetsIcon()
     {
-        $expected = Mockery::mock(LtiDeepLinkResourceIcon::class);
+        $expected = Mockery::mock(Icon::class);
 
         $this->deepLinkResource->setIcon($expected);
 
@@ -132,7 +132,7 @@ class LtiDeepLinkResourceTest extends TestCase
 
     public function testItSetsThumbnail()
     {
-        $expected = Mockery::mock(LtiDeepLinkResourceIcon::class);
+        $expected = Mockery::mock(Icon::class);
 
         $this->deepLinkResource->setThumbnail($expected);
 
@@ -173,7 +173,7 @@ class LtiDeepLinkResourceTest extends TestCase
 
     public function testItCastsToArray()
     {
-        $icon = LtiDeepLinkResourceIcon::new($this->imageUrl, 100, 200);
+        $icon = Icon::new($this->imageUrl, 100, 200);
 
         $expected = [
             'type' => 'ltiResourceLink',

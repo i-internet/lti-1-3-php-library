@@ -1,8 +1,8 @@
 <?php
 
-namespace Packback\Lti1p3;
+namespace Packback\Lti1p3\DeepLinks;
 
-class LtiDeepLinkResourceIcon
+class Icon
 {
     private $url;
     private $width;
@@ -15,12 +15,12 @@ class LtiDeepLinkResourceIcon
         $this->height = $height;
     }
 
-    public static function new(string $url, int $width, int $height): LtiDeepLinkResourceIcon
+    public static function new(string $url, int $width, int $height): Icon
     {
-        return new LtiDeepLinkResourceIcon($url, $width, $height);
+        return new Icon($url, $width, $height);
     }
 
-    public function setUrl(string $url): LtiDeepLinkResourceIcon
+    public function setUrl(string $url): Icon
     {
         $this->url = $url;
 
@@ -32,7 +32,7 @@ class LtiDeepLinkResourceIcon
         return $this->url;
     }
 
-    public function setWidth(int $width): LtiDeepLinkResourceIcon
+    public function setWidth(int $width): Icon
     {
         $this->width = $width;
 
@@ -44,7 +44,7 @@ class LtiDeepLinkResourceIcon
         return $this->width;
     }
 
-    public function setHeight(int $height): LtiDeepLinkResourceIcon
+    public function setHeight(int $height): Icon
     {
         $this->height = $height;
 

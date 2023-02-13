@@ -2,26 +2,26 @@
 
 namespace Tests;
 
-use Packback\Lti1p3\LtiDeepLinkResourceIcon;
+use Packback\Lti1p3\DeepLinks\Icon;
 
-class LtiDeepLinkResourceIconTest extends TestCase
+class IconTest extends TestCase
 {
     public function setUp(): void
     {
         $this->imageUrl = 'https://example.com/image.png';
-        $this->deepLinkResourceIcon = new LtiDeepLinkResourceIcon($this->imageUrl, 1, 2);
+        $this->deepLinkResourceIcon = new Icon($this->imageUrl, 1, 2);
     }
 
     public function testItInstantiates()
     {
-        $this->assertInstanceOf(LtiDeepLinkResourceIcon::class, $this->deepLinkResourceIcon);
+        $this->assertInstanceOf(Icon::class, $this->deepLinkResourceIcon);
     }
 
     public function testItCreatesANewInstance()
     {
-        $deepLinkResource = LtiDeepLinkResourceIcon::new($this->imageUrl, 100, 200);
+        $deepLinkResource = Icon::new($this->imageUrl, 100, 200);
 
-        $this->assertInstanceOf(LtiDeepLinkResourceIcon::class, $deepLinkResource);
+        $this->assertInstanceOf(Icon::class, $deepLinkResource);
     }
 
     public function testItGetsUrl()
